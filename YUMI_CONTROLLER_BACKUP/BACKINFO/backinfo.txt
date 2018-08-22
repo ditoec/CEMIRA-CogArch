@@ -1,0 +1,111 @@
+#
+# Generated backup file, do not edit.
+#
+# Originally at: /hd0a/TEMP/backup.265184
+# 2018-06-02  22:17:12
+#
+>>SYSTEM_ID:
+14000-500623
+
+>>PRODUCTS_ID:
+RobotWare Version: 6.04.00.01
+SmartGripper Version: 3.52.0
+
+  RobotWare Base
+  709-1 DeviceNet Master/Slave
+  840-1 EtherNet/IP Anybus Adapter
+  603-1 Absolute Accuracy
+  606-1 Conveyor Tracking
+  Contact L
+  623-1 Multitasking
+  604-1 MultiMove Coordinated
+  608-1 World Zones
+  611-1 Path Recovery
+  612-1 Path Offset
+  613-1 Collision Detection
+  841-1 EtherNet/IP Scanner/Adapter
+  1341-1/1520-1 Integrated Vision Interface
+  988-1 RW Add-In Prepared
+  688-1 RobotStudio App Connect
+  617-1 FlexPendant Interface
+  616-1 PC Interface
+  Motor Commutation
+  Service Info System
+  Pendelum Calibration
+  Drive System IRB 14000
+  Hall Sensor Calibration
+  IRB 14000-0.5/0.5
+  SmartGripper
+
+>>HOME:
+All public files and directories
+
+>>SYSPAR:
+SYS.cfg
+PROC.cfg
+MMC.cfg
+EIO.cfg
+SIO.cfg
+MOC.cfg
+
+
+>>TASK1: (T_ROB_R,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_motion_right.mod @ 
+SYSMOD/LINKEDM.sys @ HIDDEN
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK2: (T_ROB_L,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_motion_left.mod @ 
+SYSMOD/LINKEDM.sys @ HIDDEN
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK3: (ROS_MotionServerLeft,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_motionServer_left.mod @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK4: (ROS_MotionServerRight,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_motionServer_right.mod @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK5: (ROS_StateServerLeft,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_stateServer_left.mod @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK6: (ROS_StateServerRight,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/ROS_stateServer_right.mod @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK7: (T_GRIP_Motion,,)
+PROGMOD/ROS_motionServer.mod @ 
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+>>TASK8: (T_GRIP_State,,)
+SYSMOD/ROS_common.sys @ 
+SYSMOD/user.sys @ 
+PROGMOD/Gripper_stateServer.mod @ 
+SYSMOD/ROS_messages.sys @ 
+SYSMOD/ROS_socket.sys @ 
+
+
+>>EOF:
