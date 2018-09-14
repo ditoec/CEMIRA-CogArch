@@ -249,7 +249,7 @@
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointcloudDatabaseServer /$(arg MANAGER)">
         <rosparam>
-          models: [/home/dito/catkin_ws/src/vision/data/cube2.pcd,/home/dito/catkin_ws/src/vision/data/cuboid2.pcd,/home/dito/catkin_ws/src/vision/data/cylinder.pcd]
+          models: [$(find vision)/data/cube2.pcd,$(find vision)/data/cuboid2.pcd,$(find vision)/data/cylinder.pcd]
         </rosparam>
     </node>
 
@@ -285,7 +285,7 @@
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/ColorHistogramClassifier /$(arg MANAGER)">
       <remap from="~input/array" to="color_histogram/output" />
-      <rosparam command="load" file="labels.yaml" />
+      <rosparam command="load" file="$(find vision)/config/labels.yaml" />
     </node>
 
     <node name="classification_result_visualizer"

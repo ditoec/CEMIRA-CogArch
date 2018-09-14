@@ -10,6 +10,7 @@ project(leap)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  roslib
   std_msgs
 )
 

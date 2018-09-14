@@ -251,7 +251,7 @@ void leapCallback(const leap_motion::leapros::ConstPtr& data)
     nodes[count-1] = node;
 
     int gesture = 0;
-    svm_model *model = svm_load_model(model_path);
+    svm_model *model = svm_load_model(model_path.c_str());
     if(!model){
       ROS_INFO("Model cannot be loaded!"); 
     }
@@ -356,6 +356,7 @@ int main( int argc, char** argv )
   std::stringstream ss;
   ss << package_path << "/config/hand.model";
   model_path = ss.str();
+  ROS_INFO(model_path.c_str());
 
   marker_pub = n.advertise<visualization_msgs::MarkerArray>("/leapmotion/marker", 10);
   if(marker_pub){
