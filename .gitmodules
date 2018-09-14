@@ -1,0 +1,3 @@
+[submodule "openface_ros"]
+	path = openface_ros
+	url = https://github.com/ditoec/openface_ros
