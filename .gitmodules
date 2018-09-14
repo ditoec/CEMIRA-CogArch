@@ -1,3 +1,6 @@
 [submodule "openface_ros"]
 	path = openface_ros
 	url = https://github.com/ditoec/openface_ros
+[submodule "yumi"]
+	path = yumi
+	url = https://github.com/ditoec/yumi
