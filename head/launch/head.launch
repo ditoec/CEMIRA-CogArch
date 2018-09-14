@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<launch>
+  <!-- Set ttyACM0 access to rw -->
+  <node name="head_access" pkg="head" type="head_access.sh" output="screen"/>
+</launch>

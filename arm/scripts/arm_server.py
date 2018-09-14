@@ -72,7 +72,7 @@ def handle_close_gripper(req):
 
 def handle_move_simple(req):
     print "arm - move_simple - request received! Executing..."
-    result = yumi.move_simple(req.arm, create_pose_euler(req.x, req.y, req.z, req.roll, req.pitch, req.yaw))
+    result = yumi.move_simple(req.arm, yumi.create_pose_euler(req.x, req.y, req.z, req.roll, req.pitch, req.yaw))
     if (result==1):
 	"arm - move_simple - request executed !"
     else:

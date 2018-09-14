@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<launch>
+	<machine name="cemira-slave" address="10.42.0.161" user="dito" env-loader="/home/dito/setup-slave.sh"/>	
+	<!-- Launching Leap Data Publisher Node -->
+	<node machine="cemira-slave" name="sender" pkg="leap_motion" type="sender.py" output="screen"/>
+    <!-- Launching Leap Hand Rviz Viewer and Gesture Recognition Node -->
+	<node machine="cemira-slave" name="leap_viewer" pkg="leap" type="leap_viewer" output="screen"/>
+</launch>

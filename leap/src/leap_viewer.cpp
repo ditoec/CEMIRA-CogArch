@@ -2,6 +2,8 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <leap_motion/leapros.h>
+#include <ros/package.h>
+#include <sstream>
 #include "svm.h"
 
 ros::Publisher marker_pub;
@@ -13,6 +15,8 @@ int arrowsSize = 2;
 float last_x = 0.0;
 float last_y = 0.0;
 float last_z = 0.0;
+
+std::string model_path;
 
 float calculate_dist(geometry_msgs::Point point1,geometry_msgs::Point point2){
   float x = point1.x - point2.x;
@@ -247,7 +251,7 @@ void leapCallback(const leap_motion::leapros::ConstPtr& data)
     nodes[count-1] = node;
 
     int gesture = 0;
-    svm_model *model = svm_load_model("/home/dito/hand.model");
+    svm_model *model = svm_load_model(model_path);
     if(!model){
       ROS_INFO("Model cannot be loaded!"); 
     }
@@ -347,6 +351,12 @@ int main( int argc, char** argv )
   else{
     ROS_INFO("Leap Data Subscriber failed!"); 
   }
+
+  std::string package_path = ros::package::getPath("leap");
+  std::stringstream ss;
+  ss << package_path << "/config/hand.model";
+  model_path = ss.str();
+
   marker_pub = n.advertise<visualization_msgs::MarkerArray>("/leapmotion/marker", 10);
   if(marker_pub){
     ROS_INFO("Leap Data Visualizer intitated!");
