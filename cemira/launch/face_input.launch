@@ -7,7 +7,7 @@
         <!-- Launching open face ROS 2.0 Node -->
 		<node machine="cemira-slave" name="openface_ros" pkg="openface_ros" type="openface_ros" output="screen">
 			<param name="image_topic" value="zr300/color/image_raw" />
-			<param name="publish_viz" value="false" />
+			<param name="publish_viz" value="true" />
 		</node>
     </group>
 </launch>

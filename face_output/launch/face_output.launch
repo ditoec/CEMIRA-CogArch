@@ -1,11 +1,15 @@
+<?xml version="1.0" ?>
 <launch>
-	<rosparam command="load" 
-		file="$(find homer_tts)/config/mary_tts.yaml" />
-	<rosparam param="/mary_tts/voice" subst_value="True">dfki-spike-hsmm</rosparam>
-	<rosparam param="/mary_tts/locale" subst_value="True">en_GB</rosparam>
-	<node name="run_marytts" pkg="face_output" type="run_marytts.sh"/>
-	<node ns="/robot_face" name="RobotFace" pkg="homer_robot_face" type="RobotFace" cwd="node"/>
-	<node name="homer_mary_tts" pkg="homer_tts" type="mary_tts.py"/>
-	<node name="speak_action" pkg="homer_tts" type="speak" output="screen"/>
-	<node name="face_output_server" pkg="face_output" type="face_output_server.py" output="screen"/>
+	<group>
+    	<machine name="cemira-slave" address="10.42.0.161" default="true" user="dito" env-loader="/home/dito/setup-slave.sh"/>
+		<rosparam command="load" 
+			file="$(find homer_tts)/config/mary_tts.yaml" />
+		<rosparam param="/mary_tts/voice" subst_value="True">dfki-spike-hsmm</rosparam>
+		<rosparam param="/mary_tts/locale" subst_value="True">en_GB</rosparam>
+		<node name="run_marytts" pkg="face_output" type="run_marytts.sh"/>
+		<node ns="/robot_face" name="RobotFace" pkg="homer_robot_face" type="RobotFace" cwd="node"/>
+		<node name="homer_mary_tts" pkg="homer_tts" type="mary_tts.py"/>
+		<node name="speak_action" pkg="homer_tts" type="speak" output="screen"/>
+		<node name="face_output_server" pkg="face_output" type="face_output_server.py" output="screen"/>
+	</group>
 </launch>

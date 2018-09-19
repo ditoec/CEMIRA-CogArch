@@ -1,9 +1,12 @@
 #include <ros/ros.h>
 #include <leap_motion/leapros.h>
+#include <ros/package.h>
 #include <unistd.h>
 #include "svm.h"
 
 int status;
+
+std::string model_path;
 
 float calculate_dist(geometry_msgs::Point point1,geometry_msgs::Point point2){
 	float x = point1.x - point2.x;
@@ -73,7 +76,7 @@ void leapCallback(const leap_motion::leapros::ConstPtr& data)
     svm_node node = {(-1,-1)};
     nodes[count-1] = node;
 
-    svm_model *model = svm_load_model("/home/dito/hand.model");
+    svm_model *model = svm_load_model(model_path.c_str());
     if(!model){
       ROS_INFO("Model cannot be loaded!");
       ros::shutdown(); 
@@ -110,6 +113,13 @@ int main( int argc, char** argv )
   else{
     ROS_INFO("Leap Data Subscriber failed!"); 
   }
+
+  std::string package_path = ros::package::getPath("leap");
+  std::stringstream ss;
+  ss << package_path << "/config/hand.model";
+  model_path = ss.str();
+  ROS_INFO(model_path.c_str());
+
   ros::spin();
   return 0;
 }
