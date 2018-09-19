@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<launch>
+  <!-- Launching realsense sr300 -->
+  <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+  <!-- Launching Object Recognition Pipeline -->
+  <node name="object_recognition" pkg="object_rec" type="object_rec.sh" output="screen"/>
+</launch>

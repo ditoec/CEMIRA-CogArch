@@ -1,0 +1,6 @@
+#request
+string text
+int16 emotion
+---
+#response
+bool result

@@ -35,7 +35,7 @@
 
     <!-- visualization -->
   <node name="rviz_tabletop" pkg="rviz" type="rviz"
-        args=" -d $(find vision)/config/tabletop.rviz"
+        args=" -d $(find object_rec)/config/tabletop.rviz"
         if="$(arg LAUNCH_RVIZ)"/>
   
   <group if="$(arg RUN_SELF_FILTER)">
@@ -76,8 +76,8 @@
         <remap from="~input" to="input_relay/output"/>
         <remap from="~output" to="passthrough/output" />
         <rosparam>
-          min_index: 10
-          max_index: 320
+          min_index: 5
+          max_index: 360
           filter_field: 1
       </rosparam>
  </node>
@@ -88,11 +88,12 @@
         clear_params="false">
     <remap from="~input" to="passthrough/output"/>
     <rosparam>
-      distance_threshold: 0.01
-      angular_threshold: 0.02
+      distance_threshold: 0.015
+      angular_threshold: 0.05
       max_depth_change_factor: 0.01
-      min_size: 7500
+      min_size: 2000
       max_curvature: 0.001
+      border_policy_ignore: true
       estimation_method: 1
       estimate_normal: true
       publish_normal: true
@@ -128,9 +129,10 @@
       <remap from="~input_polygons" to="/multi_plane_estimate/output_refined_polygon" />
       <remap from="~input_coefficients" to="/multi_plane_estimate/output_refined_coefficients" />
       <rosparam>
-        min_height: 0
-        max_height: 0.5
+        min_height: 0.003
+        max_height: 0.2
         use_coefficients: true
+        use_indices: false
       </rosparam>
     </node>
 
@@ -143,7 +145,7 @@
           filter_limit_min: -10000
           filter_limit_max: 10000
           keep_organized: true
-          leaf_size: 0.001
+          leaf_size: 0.002
         </rosparam>
     </node>
 
@@ -187,8 +189,8 @@
       <rosparam>
         <!--tolerance: 0.011
         min_size: 1000-->
-        tolerance: 0.002
-        min_size: 400
+        tolerance: 0.003
+        min_size: 300
       </rosparam>
     </node>
 
@@ -245,16 +247,16 @@
         </rosparam>
     </node>
 
+    <arg name="models" default="[$(find object_rec)/data/cube.pcd,$(find object_rec)/data/cuboid.pcd,$(find object_rec)/data/cylinder.pcd]"/>
+
     <node name="pcd_to_pointcloud"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointcloudDatabaseServer /$(arg MANAGER)">
-        <rosparam>
-          models: [$(find vision)/data/cube2.pcd,$(find vision)/data/cuboid2.pcd,$(find vision)/data/cylinder.pcd]
-        </rosparam>
+        <rosparam param="models" subst_value="True">$(arg models)</rosparam>
     </node>
 
     <node name="icp"
-        pkg="vision" type="icp.py" output="screen">
+        pkg="object_rec" type="icp.py" output="screen">
     </node>
     
   </group>
@@ -285,11 +287,11 @@
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/ColorHistogramClassifier /$(arg MANAGER)">
       <remap from="~input/array" to="color_histogram/output" />
-      <rosparam command="load" file="$(find vision)/config/labels.yaml" />
+      <rosparam command="load" file="$(find object_rec)/config/labels.yaml" />
     </node>
 
     <node name="classification_result_visualizer"
-          pkg="vision" type="classification_result_visualizer.py">
+          pkg="object_rec" type="classification_result_visualizer.py">
       <remap from="~input/boxes" to="cluster_decomposer_final/boxes"/>
       <remap from="~input/colors" to="color_histogram_classifier/output" />
       <remap from="~input/objects" to="icp/output" />

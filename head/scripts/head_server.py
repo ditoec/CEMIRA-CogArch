@@ -52,4 +52,4 @@ if __name__ == '__main__':
         run()
     	print "####################################     Head Server Terminated     ####################################"
     except rospy.ROSInterruptException:
-        pass
+        print("program interrupted before completion")
