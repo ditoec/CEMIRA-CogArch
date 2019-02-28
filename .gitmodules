@@ -4,6 +4,3 @@
 [submodule "yumi"]
 	path = yumi
 	url = https://github.com/ditoec/yumi
-[submodule "realsense_samples_ros"]
-	path = realsense_samples_ros
-	url = https://github.com/ditoec/realsense_samples_ros
