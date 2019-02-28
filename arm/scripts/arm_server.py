@@ -33,11 +33,14 @@ def run():
     rospy.Service('arm/close_gripper', ArmInterface, handle_close_gripper)
     rospy.Service('arm/move_simple', ArmInterface, handle_move_simple)
     rospy.Service('arm/move_point', ArmInterface, handle_move_point)
-    rospy.Service('arm/move_pick', ArmInterface, handle_move_pick)
-    rospy.Service('arm/move_place', ArmInterface, handle_move_place)
+    #rospy.Service('arm/move_pick', ArmInterface, handle_move_pick)
+    #rospy.Service('arm/move_place', ArmInterface, handle_move_place)
+    rospy.Service('arm/move_point_pick', ArmInterface, handle_move_point_pick)
+    rospy.Service('arm/move_point_pick_handover', ArmInterface, handle_move_point_pick_handover)
+    rospy.Service('arm/move_point_place', ArmInterface, handle_move_point_place)    
     rospy.Service('arm/move_handover_ready', ArmInterface, handle_move_handover_ready)
-    rospy.Service('arm/move_handover_give', ArmInterface, handle_move_handover_give)
-    rospy.Service('arm/move_handover_take', ArmInterface, handle_move_handover_take)
+    #rospy.Service('arm/move_handover_give', ArmInterface, handle_move_handover_give)
+    #rospy.Service('arm/move_handover_take', ArmInterface, handle_move_handover_take)
 
     print "Arm Server is running.. "
     rospy.on_shutdown(yumi.kill_Moveit)
@@ -104,6 +107,33 @@ def handle_move_place(req):
 	"arm - move_place - request executed !"
     else:
 	"arm - move_place - execution failed !"
+    return ArmInterfaceResponse(result)
+
+def handle_move_point_pick(req):
+    print "arm - move_point_pick - request received! Executing..."
+    result = yumi.move_point_pick(req.arm, req.x, req.y)
+    if (result==1):
+	"arm - move_point_pick - request executed !"
+    else:
+	"arm - move_point_pick - execution failed !"
+    return ArmInterfaceResponse(result)
+
+def handle_move_point_pick_handover(req):
+    print "arm - move_point_pick_handover - request received! Executing..."
+    result = yumi.move_point_pick_handover(req.arm, req.x, req.y)
+    if (result==1):
+	"arm - move_point_pick_handover - request executed !"
+    else:
+	"arm - move_point_pick_handover - execution failed !"
+    return ArmInterfaceResponse(result)
+
+def handle_move_point_place(req):
+    print "arm - move_point_place - request received! Executing..."
+    result = yumi.move_point_place(req.arm, req.x, req.y)
+    if (result==1):
+	"arm - move_point_place - request executed !"
+    else:
+	"arm - move_point_place - execution failed !"
     return ArmInterfaceResponse(result)
 
 def handle_move_handover_ready(req):

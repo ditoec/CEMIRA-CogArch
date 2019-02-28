@@ -75,23 +75,23 @@ def init_Moveit():
     #scene.add_box("table", p, (0.65, 0.65, 0))
     
     group_l = moveit_commander.MoveGroupCommander("left_arm")
-    group_l.set_planner_id("ESTkConfigDefault")
+    group_l.set_planner_id("RRTstarkConfigDefault")
     group_l.set_pose_reference_frame("yumi_body")
-    group_l.allow_replanning(False)
+    group_l.allow_replanning(True)
     group_l.set_goal_position_tolerance(0.001)
     group_l.set_goal_orientation_tolerance(0.005)
 
     group_r = moveit_commander.MoveGroupCommander("right_arm")
-    group_r.set_planner_id("ESTkConfigDefault")
+    group_r.set_planner_id("RRTstarkConfigDefault")
     group_r.set_pose_reference_frame("yumi_body")
-    group_r.allow_replanning(False)
+    group_r.allow_replanning(True)
     group_r.set_goal_position_tolerance(0.001)
     group_r.set_goal_orientation_tolerance(0.005)
 
     group_both = moveit_commander.MoveGroupCommander("both_arms")
-    group_both.set_planner_id("ESTkConfigDefault")
+    group_both.set_planner_id("RRTstarkConfigDefault")
     group_both.set_pose_reference_frame("yumi_body")
-    group_both.allow_replanning(False)
+    group_both.allow_replanning(True)
     group_both.set_goal_position_tolerance(0.001)
     group_both.set_goal_orientation_tolerance(0.005)
 
@@ -641,8 +641,11 @@ def plan_home(arm):
     success = 0
     #safeJointPositionR = [1.6379728317260742, 0.20191457867622375, -2.5927578258514404, 0.538416862487793, 2.7445449829101562, 1.5043296813964844, 1.7523150444030762]
     #safeJointPositionL = [-1.46564781665802, 0.3302380442619324, 2.507143497467041, 0.7764986753463745, -2.852548837661743, 1.659092664718628, 1.378138542175293]
-    safeJointPositionR = [0, -2.0689280275, -2.0561944901, 0.5235987755, 0, 0.6981317007, 0] #yumi home modified
-    safeJointPositionL = [0, -2.0689280275, 2.0561944901, 0.5235987755, 0, 0.6981317007, 0] #yumi home modified
+    #safeJointPositionR = [0, -2.0689280275, -2.0561944901, 0.5235987755, 0, 0.6981317007, 0] #yumi home modified
+    #safeJointPositionL = [0, -2.0689280275, 2.0561944901, 0.5235987755, 0, 0.6981317007, 0] #yumi home modified
+    safeJointPositionR =[0.2139219045639038, -1.9016152620315552, -1.4134770631790161, 0.05151747167110443, 0.4104475677013397, 1.2984635829925537, 0.6140616536140442] #user study home
+    #safeJointPositionR =[0.1444329023361206, -1.8475980758666992, -1.5281383991241455, 0.006057543680071831, 0.3669308125972748, 1.4296096563339233, 0.5392484068870544] #user study home
+    safeJointPositionL =[-0.2139219045639038, -1.9016152620315552, 1.4134770631790161, 0.05151747167110443, -0.4104475677013397, 1.2984635829925537, -0.6140616536140442] #user study home
     
     if (arm == RIGHT):
         success = plan_to_joints(group_r,safeJointPositionR)
@@ -714,105 +717,146 @@ def move_simple(arm, pose,should_wait=True):
 def move_straight(arm, x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad):
     success = 0
     try:
-        yumi.traverse_path(arm, [x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad], 10)
+        traverse_path(arm, [x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad], 10)
 	success = 1
     except Exception:
         success = move_simple(arm, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
     return success
 
 #move on top of a point on the table and point at it
-def move_point(arm, x_p, y_p, z_p=0.20, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+def move_point(arm, x_p, y_p, z_p=0.35, roll_rad=0, pitch_rad=PI, yaw_rad=0):
     global last_arm
     success = 0
     if(x_p<0.15 and x_p>0.55):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.6 and y_p>0.6):
 	rospy.logerr('Y value is outside table area !')
 	return success
     if (arm != BOTH):
         success = move_simple(arm, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
-	close_grippers(arm)
+	#success = move_straight(arm,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#close_grippers(arm)
 	last_arm = arm	
     else:
 	if(y_p>=0):
-	    plan_home(RIGHT)
+	    #plan_home(RIGHT)
 	    plan_simple(LEFT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
-	    success = move_arm(RIGHT)
+	    #success = move_arm(RIGHT)
 	    success = move_arm(LEFT)
-	    close_grippers(LEFT)
+	    #close_grippers(LEFT)
+            #success = move_straight(LEFT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
     	    last_arm = LEFT
         else:
-	    plan_home(LEFT)
+	    #plan_home(LEFT)
 	    plan_simple(RIGHT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
-    	    success = move_arm(LEFT)
+    	    #success = move_arm(LEFT)
 	    success = move_arm(RIGHT)
-	    close_grippers(RIGHT)
+	    #close_grippers(RIGHT)
+	    #success = move_straight(RIGHT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
 	    last_arm = RIGHT    
     return success
 
-#move on top of a point on the table and pick an object
-def move_pick(arm, x_p, y_p, z_p=0.15, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+#move on top of a point on the table and pick an object, adjust z_p to table height
+def move_pick(arm, x_p, y_p, z_p=0.245, roll_rad=0, pitch_rad=PI, yaw_rad=0):
     global last_arm
     success = 0
     if(x_p<0.15 and x_p>0.55):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.6 and y_p>0.6):
 	rospy.logerr('Y value is outside table area !')
 	return success
     if (arm == LEFT):
 	open_grippers(LEFT)
         success = move_straight(LEFT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(LEFT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
 	close_grippers(LEFT)
-        success = move_straight(LEFT,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success = move_straight(LEFT,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(LEFT, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))
     elif(arm == RIGHT):
 	open_grippers(RIGHT)
         success = move_straight(RIGHT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(RIGHT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))	
 	close_grippers(RIGHT)
-        success = move_straight(RIGHT,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success = move_straight(RIGHT,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(RIGHT, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))
     else:
 	open_grippers(last_arm)
         success = move_straight(last_arm,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(last_arm, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))	
 	close_grippers(last_arm)
-        success = move_straight(last_arm,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success = move_straight(last_arm,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(last_arm, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))
     return success
 
-#move on top of a point on the table and place an object
-def move_place(arm, x_p, y_p, z_p=0.15, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+#move on top of a point on the table and place an object, adjust z_p to table height
+def move_place(arm, x_p, y_p, z_p=0.245, roll_rad=0, pitch_rad=PI, yaw_rad=0):
     global last_arm
     success = 0
     if(x_p<0.15 and x_p>0.55):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.6 and y_p>0.6):
 	rospy.logerr('Y value is outside table area !')
 	return success
     if (arm == LEFT):
         success = move_straight(LEFT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(LEFT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
 	open_grippers(LEFT)
-        success =move_straight(LEFT,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success =move_straight(LEFT,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(LEFT, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))
     elif(arm == RIGHT):
         success = move_straight(RIGHT,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(RIGHT, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))	
 	open_grippers(RIGHT)
-        success = move_straight(RIGHT,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success = move_straight(RIGHT,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(RIGHT, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))
     else:
         success = move_straight(last_arm,x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(last_arm, create_pose_euler(x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad))	
 	open_grippers(last_arm)
-        success = move_straight(last_arm,x_p, y_p, 0.20, roll_rad, pitch_rad, yaw_rad)
+        success = move_straight(last_arm,x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad)
+	#success = move_simple(last_arm, create_pose_euler(x_p, y_p, 0.35, roll_rad, pitch_rad, yaw_rad))	
     return success
+
+#move on top of a point on the table, and pick an object
+def move_point_pick(arm, x_p, y_p, z_p=0.35, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+    success = 0
+    success = move_point(arm, x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+    success = move_pick(arm, x_p, y_p, 0.245, roll_rad, pitch_rad, yaw_rad)   
+    return success
+
+#move on top of a point on the table, and pick an object, and handover
+def move_point_pick_handover(arm, x_p, y_p, z_p=0.35, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+    success = 0
+    success = move_point(arm, x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+    success = move_pick(arm, x_p, y_p, 0.245, roll_rad, pitch_rad, yaw_rad)   
+    y_h = 0.35
+    if (arm == RIGHT):
+	y_h = -y_h
+    success = move_handover_ready(arm,0.7,y_h,z_p,HALF_PI,0,HALF_PI)
+    return success
+
+#move on top of a point on the table, and place an object
+def move_point_place(arm, x_p, y_p, z_p=0.35, roll_rad=0, pitch_rad=PI, yaw_rad=0):
+    success = 0
+    success = move_point(arm, x_p, y_p, z_p, roll_rad, pitch_rad, yaw_rad)
+    success = move_place(arm, x_p, y_p, 0.245, roll_rad, pitch_rad, yaw_rad)   
+    return success
+
 
 #move to the hand over area (where the human hand is, 10 cm behind in the x direction)
-def move_handover_ready(arm, x_p , y_p, z_p=0.3, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
+def move_handover_ready(arm, x_p=0.7 , y_p, z_p=0.35, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
     global last_arm
     success = 0
-    if(x_p<0.25 and x_p>0.55):
+    if(x_p<0.25 and x_p>0.75):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.4 and y_p>0.4):
 	rospy.logerr('Y value is outside table area !')
 	return success
-    if(z_p<0.10 and z_p>0.5):
+    if(z_p<0.2 and z_p>0.6):
 	rospy.logerr('Z value is outside table area !')
 	return success
     if (arm != BOTH):
@@ -820,32 +864,32 @@ def move_handover_ready(arm, x_p , y_p, z_p=0.3, roll_rad=HALF_PI, pitch_rad=0, 
 	last_arm = arm	
     else:
 	if(y_p>=0):
-	    plan_home(RIGHT)
+	    #plan_home(RIGHT)
 	    plan_simple(LEFT, create_pose_euler(x_p-0.1, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
-	    success = move_arm(RIGHT)
+	    #success = move_arm(RIGHT)
 	    success = move_arm(LEFT)
-	    close_grippers(LEFT)
+	    #close_grippers(LEFT)
     	    last_arm = LEFT
         else:
-	    plan_home(LEFT)
+	    #plan_home(LEFT)
 	    plan_simple(RIGHT, create_pose_euler(x_p-0.1, y_p, z_p, roll_rad, pitch_rad, yaw_rad))
-    	    success = move_arm(LEFT)
+    	    #success = move_arm(LEFT)
 	    success = move_arm(RIGHT)
-	    close_grippers(RIGHT)
+	    #close_grippers(RIGHT)
 	    last_arm = RIGHT    
     return success
 
 #give object to human hand
-def move_handover_give(arm, x_p , y_p, z_p=0.3, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
+def move_handover_give(arm, x_p , y_p, z_p=0.4, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
     global last_arm
     success = 0
     if(x_p<0.25 and x_p>0.55):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.4 and y_p>0.4):
 	rospy.logerr('Y value is outside table area !')
 	return success
-    if(z_p<0.10 and z_p>0.5):
+    if(z_p<0.2 and z_p>0.6):
 	rospy.logerr('Z value is outside table area !')
 	return success
     if (arm == LEFT):
@@ -863,16 +907,16 @@ def move_handover_give(arm, x_p , y_p, z_p=0.3, roll_rad=HALF_PI, pitch_rad=0, y
     return success
 
 #take object from human hand
-def move_handover_take(arm, x_p , y_p, z_p=0.3, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
+def move_handover_take(arm, x_p , y_p, z_p=0.4, roll_rad=HALF_PI, pitch_rad=0, yaw_rad=HALF_PI):
     global last_arm
     success = 0 
     if(x_p<0.25 and x_p>0.55):
 	rospy.logerr('X value is outside table area !')
 	return success
-    if(y_p<-0.325 and y_p>0.325):
+    if(y_p<-0.4 and y_p>0.4):
 	rospy.logerr('Y value is outside table area !')
 	return success
-    if(z_p<0.10 and z_p>0.5):
+    if(z_p<0.2 and z_p>0.6):
 	rospy.logerr('Z value is outside table area !')
 	return success
     if (arm == LEFT):

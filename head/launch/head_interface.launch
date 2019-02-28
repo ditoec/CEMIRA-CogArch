@@ -17,7 +17,7 @@
   <!-- Launching ROS - Head Connection -->
   <node name="head_interface" pkg="dynamixel_workbench_controllers" type="position_control" required="true" output="screen">
     <rosparam>
-      profile_velocity: 100
+      profile_velocity: 50
       profile_acceleration: 10
     </rosparam>
   </node>

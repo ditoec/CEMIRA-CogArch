@@ -1,13 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
-    <group>
-    	<machine name="cemira-slave" address="10.42.0.161" default="true" user="dito" env-loader="/home/dito/setup-slave.sh"/>
-        <!-- Launching realsense ZR300 -->
-        <include file="$(find realsense_ros_camera)/launch/demo_zr300_camera.launch"/>
-        <!-- Launching open face ROS 2.0 Node -->
-		<node machine="cemira-slave" name="openface_ros" pkg="openface_ros" type="openface_ros" output="screen">
-			<param name="image_topic" value="zr300/color/image_raw" />
-			<param name="publish_viz" value="true" />
-		</node>
-    </group>
+        <!-- Launching realsense D415 -->
+        <include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
+        <!-- Launching open face ROS 2.1 Node -->
+	<node name="openface2_ros" pkg="openface2_ros" type="openface2_ros" output="screen">
+		<param name="image_topic" value="camera/color/image_raw" />
+		<param name="publish_viz" value="false" />
+	</node>
 </launch>

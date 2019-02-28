@@ -31,7 +31,7 @@ def handle_move_head(req):
 	 pan = -math.pi/4
     elif (pan > (math.pi/4)): 
 	pan = math.pi/4
-    tilt = math.atan2((req.z),(req.x)) #use a static Z offset here
+    tilt = math.atan2((req.z-0.5),(req.x)) #use a static Z offset here
     if (tilt < - 0.25):
 	tilt = -0.25
     if (tilt > 0):
